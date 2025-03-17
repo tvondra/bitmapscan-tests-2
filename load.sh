@@ -98,3 +98,64 @@ JOIN results_aggregated p ON (m.machine = p.machine AND m.device = p.device AND 
 WHERE m.build = 'master' AND p.build = 'patched-thomas' AND p.optimal = 'bitmapscan'
 ORDER BY (p.timing - m.timing) DESC
 EOF
+
+
+sqlite3 results.db > summary.txt <<EOF
+.mode table
+SELECT caching, machine, device, master, melanie, thomas, cast((100 * melanie/master) as int) AS melanie_pct, cast((100 * thomas/master) as int) AS thomas_pct FROM (
+SELECT m.caching, m.machine, m.device, sum(case when m.build = 'master' then m.timing else 0 end) AS master, sum(case when m.build = 'patched-melanie' then m.timing else 0 end) AS melanie, sum(case when m.build = 'patched-thomas' then m.timing else 0 end) AS thomas
+FROM results_aggregated m
+WHERE m.optimal = 'bitmapscan'
+GROUP BY m.caching, m.machine, m.device
+ORDER BY m.caching, m.machine, m.device) x;
+EOF
+
+sqlite3 results.db >> summary.txt <<EOF
+.mode table
+SELECT caching, eic, machine, device, master, melanie, thomas, cast((100 * melanie/master) as int) AS melanie_pct, cast((100 * thomas/master) as int) AS thomas_pct FROM (
+SELECT m.caching, m.eic, m.machine, m.device, sum(case when m.build = 'master' then m.timing else 0 end) AS master, sum(case when m.build = 'patched-melanie' then m.timing else 0 end) AS melanie, sum(case when m.build = 'patched-thomas' then m.timing else 0 end) AS thomas
+FROM results_aggregated m
+WHERE m.optimal = 'bitmapscan'
+GROUP BY m.caching, m.eic, m.machine, m.device
+ORDER BY m.caching, m.eic, m.machine, m.device) x;
+EOF
+
+sqlite3 results.db >> summary.txt <<EOF
+.mode table
+SELECT caching, ioc, machine, device, master, melanie, thomas, cast((100 * melanie/master) as int) AS melanie_pct, cast((100 * thomas/master) as int) AS thomas_pct FROM (
+SELECT m.caching, m.ioc, m.machine, m.device, sum(case when m.build = 'master' then m.timing else 0 end) AS master, sum(case when m.build = 'patched-melanie' then m.timing else 0 end) AS melanie, sum(case when m.build = 'patched-thomas' then m.timing else 0 end) AS thomas
+FROM results_aggregated m
+WHERE m.optimal = 'bitmapscan'
+GROUP BY m.caching, m.ioc, m.machine, m.device
+ORDER BY m.caching, m.ioc, m.machine, m.device) x;
+EOF
+
+sqlite3 results.db >> summary.txt <<EOF
+.mode table
+SELECT caching, readahead, machine, device, master, melanie, thomas, cast((100 * melanie/master) as int) AS melanie_pct, cast((100 * thomas/master) as int) AS thomas_pct FROM (
+SELECT m.caching, m.readahead, m.machine, m.device, sum(case when m.build = 'master' then m.timing else 0 end) AS master, sum(case when m.build = 'patched-melanie' then m.timing else 0 end) AS melanie, sum(case when m.build = 'patched-thomas' then m.timing else 0 end) AS thomas
+FROM results_aggregated m
+WHERE m.optimal = 'bitmapscan'
+GROUP BY m.caching, m.readahead, m.machine, m.device
+ORDER BY m.caching, m.readahead, m.machine, m.device) x;
+EOF
+
+sqlite3 results.db >> summary.txt <<EOF
+.mode table
+SELECT caching, eic, nmatches, machine, device, master, melanie, thomas, cast((100 * melanie/master) as int) AS melanie_pct, cast((100 * thomas/master) as int) AS thomas_pct FROM (
+SELECT m.caching, m.eic, m.nmatches, m.machine, m.device, sum(case when m.build = 'master' then m.timing else 0 end) AS master, sum(case when m.build = 'patched-melanie' then m.timing else 0 end) AS melanie, sum(case when m.build = 'patched-thomas' then m.timing else 0 end) AS thomas
+FROM results_aggregated m
+WHERE m.optimal = 'bitmapscan'
+GROUP BY m.caching, m.eic, m.nmatches, m.machine, m.device
+ORDER BY m.caching, m.eic, m.nmatches, m.machine, m.device) x;
+EOF
+
+sqlite3 results.db >> summary.txt <<EOF
+.mode table
+SELECT caching, eic, dataset, machine, device, master, melanie, thomas, cast((100 * melanie/master) as int) AS melanie_pct, cast((100 * thomas/master) as int) AS thomas_pct FROM (
+SELECT m.caching, m.eic, m.dataset, m.machine, m.device, sum(case when m.build = 'master' then m.timing else 0 end) AS master, sum(case when m.build = 'patched-melanie' then m.timing else 0 end) AS melanie, sum(case when m.build = 'patched-thomas' then m.timing else 0 end) AS thomas
+FROM results_aggregated m
+WHERE m.optimal = 'bitmapscan'
+GROUP BY m.caching, m.eic, m.dataset, m.machine, m.device
+ORDER BY m.caching, m.eic, m.dataset, m.machine, m.device) x;
+EOF
